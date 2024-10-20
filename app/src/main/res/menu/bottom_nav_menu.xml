@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Menu item untuk navigasi ke halaman Home -->
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <!-- Menu item untuk navigasi ke halaman Upcoming Events -->
+    <item
+        android:id="@+id/navigation_upcoming"
+        android:icon="@drawable/ic_event_available_24"
+        android:title="@string/title_upcoming" />
+
+    <!-- Menu item untuk navigasi ke halaman Finished Events -->
+    <item
+        android:id="@+id/navigation_finished"
+        android:icon="@drawable/ic_event_busy_24"
+        android:title="@string/title_finished" />
+
+</menu>

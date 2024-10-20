@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Dicoding Event</string>
+    <string name="btn_link">Daftar</string>
+
+    <string name="detail_begintime">Your text here</string>
+    <string name="detail_description">Your text here</string>
+    <string name="detail_name">Your text here</string>
+    <string name="detail_quota">Your text here</string>
+
+    <string name="judul_event">Your text here</string>
+    <string name="quota_left">%d slot tersisa</string>
+    <string name="searchbar_hint">Cari Event</string>
+
+    <string name="title_active_event">Active Events</string>
+    <string name="title_begintime">Waktu acara :</string>
+    <string name="title_description">Deskripsi acara :</string>
+    <string name="title_finished">Finished Events</string>
+    <string name="title_Finished_event">Finished Events</string>
+    <string name="title_home">Home</string>
+    <string name="title_image">Gambar</string>
+    <string name="title_name">Nama acara :</string>
+    <string name="title_ownername">Penyelenggara acara :</string>
+    <string name="title_quota">Sisa kuota pendaftar :</string>
+    <string name="title_upcoming">Upcoming Events</string>
+    <string name="event_tidak_ditemukan">Event Tidak Ditemukan</string>
+</resources>
