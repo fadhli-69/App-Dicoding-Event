@@ -78,12 +78,12 @@ class DetailActivity : AppCompatActivity() {
 
             binding.fabFavorite.setOnClickListener {
                 viewModel.toggleFavorite(event)
-                showFavoriteMessage(event)
+                showFavoriteMessage()
             }
         }
     }
 
-    private fun showFavoriteMessage(event: ListEventsItem) {
+    private fun showFavoriteMessage() {
         val message = if (viewModel.isFavorite.value) {
             getString(R.string.remove_from_favorite)
         } else {

@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?attr/colorSurface"
     tools:context=".ui.fragment.SettingFragment">
 
     <com.google.android.material.switchmaterial.SwitchMaterial

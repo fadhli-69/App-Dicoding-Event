@@ -87,6 +87,7 @@ dependencies {
 
     implementation (libs.androidx.datastore.preferences)
 
+    implementation (libs.androidx.work.runtime.ktx)
 
     // Testing Libraries
     testImplementation(libs.junit)                       // JUnit for unit testing

@@ -82,7 +82,7 @@ class MainViewModel @Inject constructor(
                 event.id?.let { id ->
                     repository.isEventFavorited(id).collect { isFavorite ->
                         event.isBookmarked = isFavorite
-                        _favoriteStatus.value = _favoriteStatus.value + (id to isFavorite)
+                        _favoriteStatus.value += (id to isFavorite)
                     }
                 }
             }
