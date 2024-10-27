@@ -2,15 +2,12 @@ package com.dicoding.aplikasidicodingevent.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.dicoding.aplikasidicodingevent.R
 import com.dicoding.aplikasidicodingevent.data.ListEventsItem
+import com.dicoding.aplikasidicodingevent.databinding.ItemRowImageBinding
+import com.dicoding.aplikasidicodingevent.extensions.loadImage
 
 class EventAdapter(
     private val context: Context,
@@ -20,20 +17,14 @@ class EventAdapter(
     private var events: List<ListEventsItem> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val view = LayoutInflater.from(context)
-            .inflate(R.layout.item_row_image, parent, false)
-        return EventViewHolder(view)
+        val binding = ItemRowImageBinding.inflate(LayoutInflater.from(context), parent, false)
+        return EventViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = events[position]
         holder.itemText.text = event.name
-
-        Glide.with(context)
-            .load(event.imageLogo ?: event.mediaCover)
-            .placeholder(R.drawable.baseline_image_24) // Placeholder saat gambar dimuat
-            .error(R.drawable.baseline_broken_image_24) // Gambar gagal dimuat
-            .into(holder.itemImage)
+        holder.itemImage.loadImage(event.imageLogo ?: event.mediaCover)
 
         holder.itemView.setOnClickListener {
             itemClickListener(event)
@@ -49,9 +40,9 @@ class EventAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemImage: ImageView = itemView.findViewById(R.id.item_Image)
-        val itemText: TextView = itemView.findViewById(R.id.item_Text)
+    class EventViewHolder(binding: ItemRowImageBinding) : RecyclerView.ViewHolder(binding.root) {
+        val itemImage = binding.itemImage
+        val itemText = binding.itemText
     }
 
     class EventsDiffCallback(

@@ -4,18 +4,21 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
-import com.bumptech.glide.Glide
 import com.dicoding.aplikasidicodingevent.R
 import com.dicoding.aplikasidicodingevent.data.ListEventsItem
 import com.dicoding.aplikasidicodingevent.databinding.ActivityDetailBinding
+import com.dicoding.aplikasidicodingevent.extensions.loadImage
 import com.google.android.material.snackbar.Snackbar
 
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
+
+    companion object {
+        private const val EVENT_KEY = "event"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +27,10 @@ class DetailActivity : AppCompatActivity() {
 
         // Mengambil data event dari intent
         val event = if (Build.VERSION.SDK_INT >= 35) {
-            intent.getParcelableExtra("event", ListEventsItem::class.java)
+            intent.getParcelableExtra(EVENT_KEY, ListEventsItem::class.java)
         } else {
             @Suppress("DEPRECATION")
-            intent.getParcelableExtra("event")
+            intent.getParcelableExtra(EVENT_KEY)
         }
 
         // Jika event tidak null, tampilkan datanya
@@ -44,8 +47,7 @@ class DetailActivity : AppCompatActivity() {
             }
 
             // Menampilkan gambar event menggunakan Glide
-            val imageView: ImageView = binding.ivImageUpcoming
-            Glide.with(this).load(event.imageLogo ?: event.mediaCover).into(imageView)
+            binding.ivImageUpcoming.loadImage(event.imageLogo ?: event.mediaCover)
 
             // Klik tombol untuk membuka link pendaftaran event
             binding.btnDetailSign.setOnClickListener {

@@ -7,20 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.aplikasidicodingevent.adapter.EventAdapter
+import com.dicoding.aplikasidicodingevent.data.Resource
 import com.dicoding.aplikasidicodingevent.databinding.FragmentFinishedBinding
-import com.dicoding.aplikasidicodingevent.viewmodel.MainViewModel
+import com.dicoding.aplikasidicodingevent.extensions.setVisible
 import com.dicoding.aplikasidicodingevent.ui.activity.DetailActivity
+import com.dicoding.aplikasidicodingevent.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class FinishedFragment : Fragment() {
-
     private var _binding: FragmentFinishedBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var mainViewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(
@@ -35,7 +41,6 @@ class FinishedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        setupViewModel()
         setupSearchView()
         observeViewModel()
     }
@@ -53,22 +58,22 @@ class FinishedFragment : Fragment() {
         }
     }
 
-    private fun setupViewModel() {
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-    }
-
     private fun setupSearchView() {
         binding.searchViewFinished.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { mainViewModel.setSearchQuery(it, false) }
+                query?.let {
+                    viewModel.searchEvents(it, isActive = false)
+                }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText.isNullOrEmpty()) {
-                    mainViewModel.resetSearch(false)
-                } else {
-                    mainViewModel.setSearchQuery(newText, false)
+                newText?.let {
+                    if (it.isEmpty()) {
+                        viewModel.resetSearch(isActive = false)
+                    } else {
+                        viewModel.searchEvents(it, isActive = false)
+                    }
                 }
                 return true
             }
@@ -76,31 +81,26 @@ class FinishedFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        mainViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
-            if (binding.searchViewFinished.query.isNullOrEmpty()) {
-                eventAdapter.submitList(events)
-                toggleNoResults(events.isEmpty())
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.searchResults.collect { result ->
+                    when(result) {
+                        is Resource.Loading -> {
+                            binding.progressBar.setVisible(true)
+                        }
+                        is Resource.Success -> {
+                            binding.progressBar.setVisible(false)
+                            result.data?.let { eventAdapter.submitList(it) }
+                        }
+                        is Resource.Error -> {
+                            binding.progressBar.setVisible(false)
+                            Snackbar.make(binding.root, result.message.toString(), Snackbar.LENGTH_LONG).show()
+                        }
+                    }
+                }
             }
         }
-
-        mainViewModel.searchResults.observe(viewLifecycleOwner) { searchResults ->
-            eventAdapter.submitList(searchResults)
-            toggleNoResults(searchResults.isEmpty())
-        }
-
-        mainViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
-        mainViewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
-            errorMsg?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun toggleNoResults(isEmpty: Boolean) {
-        binding.tvNoResults.visibility = if (isEmpty) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

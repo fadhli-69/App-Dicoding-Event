@@ -1,132 +1,70 @@
 package com.dicoding.aplikasidicodingevent.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dicoding.aplikasidicodingevent.data.EventResponse
+import androidx.lifecycle.viewModelScope
 import com.dicoding.aplikasidicodingevent.data.ListEventsItem
-import com.dicoding.aplikasidicodingevent.retrofit.ApiConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import com.dicoding.aplikasidicodingevent.data.Resource
+import com.dicoding.aplikasidicodingevent.data.repository.EventRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val repository: EventRepository
+) : ViewModel() {
 
-    // Menyimpan data event yang sedang berlangsung (upcoming)
-    private val _activeEvents = MutableLiveData<List<ListEventsItem>>()
-    val activeEvents: LiveData<List<ListEventsItem>> = _activeEvents
+    private val _activeEvents = MutableStateFlow<Resource<List<ListEventsItem>>>(Resource.Loading())
+    val activeEvents: StateFlow<Resource<List<ListEventsItem>>> = _activeEvents
 
-    // Menyimpan data event yang sudah selesai (finished)
-    private val _finishedEvents = MutableLiveData<List<ListEventsItem>>()
-    val finishedEvents: LiveData<List<ListEventsItem>> = _finishedEvents
+    private val _finishedEvents = MutableStateFlow<Resource<List<ListEventsItem>>>(Resource.Loading())
+    val finishedEvents: StateFlow<Resource<List<ListEventsItem>>> = _finishedEvents
 
-    // Menyimpan hasil pencarian
-    private val _searchResults = MutableLiveData<List<ListEventsItem>>()
-    val searchResults: LiveData<List<ListEventsItem>> = _searchResults
-
-    // Menunjukkan apakah sedang dalam proses loading data
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    // Menyimpan pesan error jika terjadi kesalahan
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
-
-    private val _searchQuery = MutableLiveData<String>()
-    val searchQuery: LiveData<String> = _searchQuery
+    private val _searchResults = MutableStateFlow<Resource<List<ListEventsItem>>>(Resource.Loading())
+    val searchResults: StateFlow<Resource<List<ListEventsItem>>> = _searchResults
 
     init {
-        fetchEvents() // Mengambil semua event (upcoming dan finished)
+        fetchActiveEvents()
+        fetchFinishedEvents()
     }
 
-    // Fungsi untuk mengambil data event (baik upcoming maupun finished)
-    fun fetchEvents() {
-        _isLoading.value = true
-        _errorMessage.value = null
+    private fun fetchActiveEvents() {
+        viewModelScope.launch {
+            repository.getActiveEvents().collect {
+                _activeEvents.value = it
+            }
+        }
+    }
 
-        val clientUpcoming = ApiConfig.create().getEvents(1)
-        clientUpcoming.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    _activeEvents.value = response.body()?.listEvents ?: emptyList()
-                } else {
-                    _errorMessage.value = "Terjadi kesalahan: ${response.message()}"
+    private fun fetchFinishedEvents() {
+        viewModelScope.launch {
+            repository.getFinishedEvents().collect {
+                _finishedEvents.value = it
+            }
+        }
+    }
+
+    fun searchEvents(query: String, isActive: Boolean) {
+        viewModelScope.launch {
+            repository.searchEvents(query, isActive).collect {
+                _searchResults.value = it
+            }
+        }
+    }
+
+    fun resetSearch(isActive: Boolean) {
+        viewModelScope.launch {
+            if (isActive) {
+                repository.getActiveEvents().collect {
+                    _searchResults.value = it
                 }
-                checkLoadingComplete()
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                handleError(t)
-                checkLoadingComplete()
-            }
-        })
-
-        val clientFinished = ApiConfig.create().getEvents(0)
-        clientFinished.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    _finishedEvents.value = response.body()?.listEvents ?: emptyList()
-                } else {
-                    _errorMessage.value = "Terjadi kesalahan: ${response.message()}"
+            } else {
+                repository.getFinishedEvents().collect {
+                    _searchResults.value = it
                 }
-                checkLoadingComplete()
             }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                handleError(t)
-                checkLoadingComplete()
-            }
-        })
-    }
-
-    // Fungsi pencarian untuk upcoming dan finished
-    fun setSearchQuery(query: String, isUpcoming: Boolean) {
-        _searchQuery.value = query
-        searchEvents(query, isUpcoming)
-    }
-
-    private fun searchEvents(query: String, isUpcoming: Boolean) {
-        val validQuery = query.takeIf { it.isNotBlank() } ?: return resetSearch(isUpcoming)
-
-        val filteredEvents = if (isUpcoming) {
-            _activeEvents.value?.filter { event ->
-                event.name?.contains(validQuery, ignoreCase = true) == true
-            } ?: emptyList()
-        } else {
-            _finishedEvents.value?.filter { event ->
-                event.name?.contains(validQuery, ignoreCase = true) == true
-            } ?: emptyList()
         }
-
-        _searchResults.value = filteredEvents
-    }
-
-    // Fungsi reset hasil pencarian
-    fun resetSearch(isUpcoming: Boolean) {
-        if (isUpcoming) {
-            _searchResults.value = _activeEvents.value
-        } else {
-            _searchResults.value = _finishedEvents.value
-        }
-    }
-
-    private fun checkLoadingComplete() {
-        if (_activeEvents.value != null && _finishedEvents.value != null) {
-            _isLoading.value = false
-        }
-    }
-
-    private fun handleError(t: Throwable) {
-        val message = when (t) {
-            is UnknownHostException -> "Maaf, internet Anda lambat atau mati"
-            is SocketTimeoutException -> "Koneksi internet Anda terlalu lambat"
-            else -> "Terjadi kesalahan: ${t.localizedMessage}"
-        }
-        _errorMessage.value = message
-        Log.e("MainViewModel", "onFailure: ${t.message}")
     }
 }
-

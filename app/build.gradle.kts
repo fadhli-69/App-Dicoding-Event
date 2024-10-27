@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -31,36 +34,60 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
+
 }
 
 dependencies {
+    // AndroidX Core Libraries
+    implementation(libs.androidx.core.ktx)              // Core KTX Extensions
+    implementation(libs.androidx.appcompat)             // Backward-compatible UI elements
+    implementation(libs.androidx.cardview)              // CardView UI component
+    implementation(libs.androidx.constraintlayout)      // ConstraintLayout for flexible UI layouts
+    implementation(libs.androidx.activity)              // Activity support with lifecycle awareness
 
+    // AndroidX Lifecycle & Navigation Components
+    implementation(libs.androidx.lifecycle.livedata.ktx) // LiveData for observing UI changes
+    implementation(libs.androidx.lifecycle.viewmodel.ktx) // ViewModel to handle UI-related data
+    implementation(libs.androidx.navigation.fragment.ktx) // Navigation component for fragment management
+    implementation(libs.androidx.navigation.ui.ktx)       // Navigation UI component
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
-    implementation (libs.androidx.cardview)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.activity)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.converter.gson)
-    implementation(libs.logging.interceptor)
-    implementation(libs.glide)
-    implementation(libs.retrofit)
+    // Material Design Components
+    implementation(libs.material)                        // Material Design components and styles
+
+    // Dependency Injection
+    implementation(libs.hilt.android)                    // Hilt for dependency injection
+    ksp(libs.hilt.compiler)                              // Hilt compiler for code generation
+
+    // Networking & Serialization
+    implementation(libs.retrofit)                        // Retrofit for API integration
+    implementation(libs.converter.gson)                  // Gson converter for JSON parsing
+    implementation(libs.logging.interceptor)             // OkHttp logging for network requests
+
+    // Image Loading
+    implementation(libs.glide)                           // Glide for image loading and caching
+
+    // Kotlin Coroutines
+    implementation(libs.kotlinx.coroutines.android)      // Coroutines for asynchronous tasks on Android
+
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    // Testing Libraries
+    testImplementation(libs.junit)                       // JUnit for unit testing
+    androidTestImplementation(libs.androidx.junit)       // AndroidX JUnit extensions for Android testing
+    androidTestImplementation(libs.androidx.espresso.core) // Espresso for UI testing
 }
+

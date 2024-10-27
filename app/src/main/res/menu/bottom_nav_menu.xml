@@ -19,4 +19,9 @@
         android:icon="@drawable/ic_event_busy_24"
         android:title="@string/title_finished" />
 
+    <item
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/title_favorite" />
+
 </menu>
