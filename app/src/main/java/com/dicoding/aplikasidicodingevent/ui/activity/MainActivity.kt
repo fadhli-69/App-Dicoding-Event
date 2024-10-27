@@ -1,9 +1,13 @@
 package com.dicoding.aplikasidicodingevent.ui.activity
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -26,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        updateStatusBarColor()
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
@@ -49,17 +54,36 @@ class MainActivity : AppCompatActivity() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+            updateStatusBarColor()
         }
 
         // Hide/show bottom navigation based on destination
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_setting -> {
-                    binding.navView.visibility = android.view.View.GONE
+                    binding.navView.visibility = View.GONE
                 }
                 else -> {
-                    binding.navView.visibility = android.view.View.VISIBLE
+                    binding.navView.visibility = View.VISIBLE
                 }
+            }
+        }
+    }
+
+    private fun updateStatusBarColor() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                // Dark mode
+                window.statusBarColor = ContextCompat.getColor(this, R.color.md_theme_surface)
+                windowInsetsController.isAppearanceLightStatusBars = false
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                // Light mode
+                window.statusBarColor = ContextCompat.getColor(this, R.color.md_theme_surface)
+                windowInsetsController.isAppearanceLightStatusBars = true
             }
         }
     }

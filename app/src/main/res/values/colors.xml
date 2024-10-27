@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="primaryColor">#034242</color>
+    <color name="md_theme_primary">#086B5A</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#A1F2DD</color>
+    <color name="md_theme_onPrimaryContainer">#00201A</color>
+
+    <color name="md_theme_secondary">#4B635C</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#CDE8DF</color>
+    <color name="md_theme_onSecondaryContainer">#06201A</color>
+
+    <color name="md_theme_surface">#F5FBF7</color>
+    <color name="md_theme_onSurface">#171D1B</color>
+
+    <color name="md_theme_background">#F5FBF7</color>
+    <color name="md_theme_onBackground">#171D1B</color>
+
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_errorContainer">#93000A</color>
+    <color name="md_theme_onErrorContainer">#FFDAD6</color>
 </resources>

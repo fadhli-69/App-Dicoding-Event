@@ -5,31 +5,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.UpcomingFragment"
+    android:background="?attr/colorSurface"
     android:padding="8dp">
 
-    <!-- SearchView untuk pencarian event -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view_upcoming"
         android:padding="6dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:background="@color/teal_200"
+        android:layout_marginTop="30dp"
         android:iconifiedByDefault="false"
+        android:background="?attr/colorSurfaceVariant"
         app:queryHint="@string/searchbar_hint"
+        app:queryBackground="@android:color/transparent"
+        app:iconTint="?attr/colorOnSurfaceVariant"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:queryBackground="@android:color/transparent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- TextView untuk menampilkan pesan "Tidak ditemukan" -->
     <TextView
         android:id="@+id/tv_no_results"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/event_tidak_ditemukan"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="30sp"
         android:textStyle="bold"
         android:visibility="gone"
@@ -37,23 +37,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view_upcoming" />
 
-    <!-- RecyclerView untuk menampilkan daftar event upcoming -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_api_upcoming"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/teal_700"
         app:layout_constraintTop_toBottomOf="@id/tv_no_results"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- ProgressBar untuk loading data -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:indeterminateTint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

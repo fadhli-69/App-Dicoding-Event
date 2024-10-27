@@ -106,16 +106,22 @@ class UpcomingFragment : Fragment() {
         when (result) {
             is Resource.Loading -> {
                 binding.progressBar.setVisible(true)
+                binding.tvNoResults.setVisible(false) // Sembunyikan saat loading
             }
             is Resource.Success -> {
                 binding.progressBar.setVisible(false)
-                result.data?.let {
-                    viewModel.updateFavoriteStatuses(it)
-                    eventAdapter.submitList(it)
+                result.data?.let { events ->
+                    viewModel.updateFavoriteStatuses(events)
+                    eventAdapter.submitList(events)
+                    // Tampilkan tv_no_results jika list kosong
+                    binding.tvNoResults.setVisible(events.isEmpty())
+                    // Tampilkan recycler view jika ada data
+                    binding.recycleApiUpcoming.setVisible(events.isNotEmpty())
                 }
             }
             is Resource.Error -> {
                 binding.progressBar.setVisible(false)
+                binding.tvNoResults.setVisible(true) // Tampilkan saat error
                 Snackbar.make(binding.root, result.message.toString(), Snackbar.LENGTH_LONG).show()
             }
         }

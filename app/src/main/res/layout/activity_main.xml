@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- FragmentContainerView untuk navigasi antar fragment -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryColor"
-        android:elevation="4dp"
+        android:background="?attr/colorSurface"
+        android:elevation="0dp"
         android:paddingTop="20dp" />
 
     <androidx.fragment.app.FragmentContainerView
@@ -18,15 +17,16 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
         app:defaultNavHost="true"
         app:navGraph="@navigation/mobile_navigation" />
 
-    <!-- BottomNavigationView untuk navigasi bawah -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="?attr/colorSurface"
         app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>
