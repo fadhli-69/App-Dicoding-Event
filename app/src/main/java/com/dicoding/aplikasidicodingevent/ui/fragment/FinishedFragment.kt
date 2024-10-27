@@ -41,7 +41,6 @@ class FinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
         setupSearchView()
         observeViewModel()
@@ -85,12 +84,18 @@ class FinishedFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // Observe search results
                 launch {
                     viewModel.searchResults.collectLatest { result ->
                         result?.let { handleResource(it) }
-                            ?: // If search results are null, show finished events
-                            viewModel.finishedEvents.collectLatest { handleResource(it) }
+                            ?: viewModel.finishedEvents.collectLatest { handleResource(it) }
+                    }
+                }
+
+                launch {
+                    viewModel.favoriteStatus.collect { _ ->
+                        eventAdapter.currentItems.forEachIndexed { index: Int, event: ListEventsItem ->
+                            event.id?.let { eventAdapter.notifyItemChanged(index) }
+                        }
                     }
                 }
             }
@@ -104,7 +109,10 @@ class FinishedFragment : Fragment() {
             }
             is Resource.Success -> {
                 binding.progressBar.setVisible(false)
-                result.data?.let { eventAdapter.submitList(it) }
+                result.data?.let {
+                    viewModel.updateFavoriteStatuses(it)
+                    eventAdapter.submitList(it)
+                }
             }
             is Resource.Error -> {
                 binding.progressBar.setVisible(false)

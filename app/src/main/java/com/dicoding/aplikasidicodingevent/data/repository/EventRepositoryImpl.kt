@@ -6,6 +6,7 @@ import com.dicoding.aplikasidicodingevent.data.local.EventDao
 import com.dicoding.aplikasidicodingevent.data.local.EventEntity
 import com.dicoding.aplikasidicodingevent.retrofit.ApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
@@ -21,7 +22,16 @@ class EventRepositoryImpl @Inject constructor(
         try {
             emit(Resource.Loading())
             val response = apiService.getEvents(1)
-            emit(Resource.Success(response.listEvents))
+            val events = response.listEvents
+
+            // Update status bookmark untuk setiap event
+            events.forEach { event ->
+                event.id?.let { id ->
+                    event.isBookmarked = eventDao.isEventFavorited(id).first()
+                }
+            }
+
+            emit(Resource.Success(events))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "Terjadi kesalahan"))
         } catch (e: IOException) {
@@ -35,7 +45,16 @@ class EventRepositoryImpl @Inject constructor(
         try {
             emit(Resource.Loading())
             val response = apiService.getEvents(0)
-            emit(Resource.Success(response.listEvents))
+            val events = response.listEvents
+
+            // Update status bookmark untuk setiap event
+            events.forEach { event ->
+                event.id?.let { id ->
+                    event.isBookmarked = eventDao.isEventFavorited(id).first()
+                }
+            }
+
+            emit(Resource.Success(events))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "Terjadi kesalahan"))
         } catch (e: IOException) {
@@ -52,6 +71,14 @@ class EventRepositoryImpl @Inject constructor(
             val filteredEvents = response.listEvents.filter {
                 it.name?.contains(query, ignoreCase = true) == true
             }
+
+            // Update status bookmark untuk hasil pencarian
+            filteredEvents.forEach { event ->
+                event.id?.let { id ->
+                    event.isBookmarked = eventDao.isEventFavorited(id).first()
+                }
+            }
+
             emit(Resource.Success(filteredEvents))
         } catch (e: Exception) {
             emit(Resource.Error("Terjadi kesalahan saat mencari event"))
@@ -60,22 +87,26 @@ class EventRepositoryImpl @Inject constructor(
 
     override fun getFavoriteEvents(): Flow<Resource<List<ListEventsItem>>> =
         eventDao.getAllFavoriteEvents().map { entities ->
-            Resource.Success(entities.map { it.toListEventsItem() })
+            Resource.Success(entities.map {
+                it.toListEventsItem().copy(isBookmarked = true)
+            })
         }
 
     override fun getFavoriteEventById(id: Int): Flow<Resource<ListEventsItem?>> =
         eventDao.getFavoriteEventById(id).map { entity ->
-            Resource.Success(entity?.toListEventsItem())
+            Resource.Success(entity?.toListEventsItem()?.copy(isBookmarked = true))
         }
 
     override fun isEventFavorited(id: Int): Flow<Boolean> =
         eventDao.isEventFavorited(id)
 
     override suspend fun addToFavorite(event: ListEventsItem) {
-        eventDao.insertFavoriteEvent(EventEntity.fromListEventsItem(event))
+        val eventEntity = EventEntity.fromListEventsItem(event).copy(isBookmarked = true)
+        eventDao.insertFavoriteEvent(eventEntity)
     }
 
     override suspend fun removeFromFavorite(event: ListEventsItem) {
-        eventDao.deleteFavoriteEvent(EventEntity.fromListEventsItem(event))
+        val eventEntity = EventEntity.fromListEventsItem(event)
+        eventDao.deleteFavoriteEvent(eventEntity)
     }
 }

@@ -13,12 +13,6 @@
         <item name="colorOnSecondary">#FFFFFF</item>
         <item name="colorOnSecondaryContainer">#FFFFFF</item>
 
-        <!-- Surface colors -->
-        <item name="colorSurface">@color/primaryColor</item>
-        <item name="colorOnSurface">#FFFFFF</item>
-        <item name="colorSurfaceVariant">@color/teal_700</item>
-        <item name="colorOnSurfaceVariant">#FFFFFF</item>
-
         <!-- Status and navigation bar -->
         <item name="android:statusBarColor">@color/primaryColor</item>
         <item name="android:navigationBarColor">@color/primaryColor</item>

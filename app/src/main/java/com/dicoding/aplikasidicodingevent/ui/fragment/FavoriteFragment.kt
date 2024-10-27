@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 class FavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: FavoriteViewModel by viewModels()
     private lateinit var adapter: EventAdapter
 
@@ -63,6 +62,7 @@ class FavoriteFragment : Fragment() {
                         } else {
                             binding.tvNoFavorites.visibility = View.GONE
                             binding.rvFavoriteEvents.visibility = View.VISIBLE
+                            events.forEach { it.isBookmarked = true }
                             adapter.submitList(events)
                         }
                     }

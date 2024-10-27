@@ -20,7 +20,8 @@ data class EventEntity(
     val name: String?,
     val beginTime: String?,
     val endTime: String?,
-    val category: String?
+    val category: String?,
+    var isBookmarked: Boolean = false
 ) {
     fun toListEventsItem(): ListEventsItem {
         return ListEventsItem(
@@ -37,7 +38,8 @@ data class EventEntity(
             name = name,
             beginTime = beginTime,
             endTime = endTime,
-            category = category
+            category = category,
+            isBookmarked = isBookmarked
         )
     }
 
@@ -57,7 +59,8 @@ data class EventEntity(
                 name = event.name,
                 beginTime = event.beginTime,
                 endTime = event.endTime,
-                category = event.category
+                category = event.category,
+                isBookmarked = event.isBookmarked
             )
         }
     }

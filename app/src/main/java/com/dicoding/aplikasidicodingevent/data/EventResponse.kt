@@ -60,5 +60,7 @@ data class ListEventsItem(
 	val endTime: String? = null,
 
 	@field:SerializedName("category")
-	val category: String? = null
+	val category: String? = null,
+
+	var isBookmarked: Boolean = false
 ) : Parcelable

@@ -21,6 +21,9 @@ class MainViewModel @Inject constructor(
     private val lastQuery = savedStateHandle.getStateFlow("last_query", "")
     private val isActiveSearch = savedStateHandle.getStateFlow("is_active_search", true)
 
+    private val _favoriteStatus = MutableStateFlow<Map<Int, Boolean>>(mapOf())
+    val favoriteStatus: StateFlow<Map<Int, Boolean>> = _favoriteStatus
+
     private val _activeEvents = MutableStateFlow<Resource<List<ListEventsItem>>>(Resource.Loading())
     val activeEvents: StateFlow<Resource<List<ListEventsItem>>> = _activeEvents
 
@@ -72,5 +75,17 @@ class MainViewModel @Inject constructor(
     fun resetSearch() {
         savedStateHandle["last_query"] = ""
         _searchResults.value = null
+    }
+    fun updateFavoriteStatuses(events: List<ListEventsItem>) {
+        viewModelScope.launch {
+            events.forEach { event ->
+                event.id?.let { id ->
+                    repository.isEventFavorited(id).collect { isFavorite ->
+                        event.isBookmarked = isFavorite
+                        _favoriteStatus.value = _favoriteStatus.value + (id to isFavorite)
+                    }
+                }
+            }
+        }
     }
 }

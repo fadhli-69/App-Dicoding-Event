@@ -26,6 +26,7 @@
         android:label="@string/title_finished"
         tools:layout="@layout/fragment_finished" />
 
+    <!-- Fragment untuk halaman Favorite -->
     <fragment
         android:id="@+id/navigation_favorite"
         android:name="com.dicoding.aplikasidicodingevent.ui.fragment.FavoriteFragment"

@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.aplikasidicodingevent.adapter.EventAdapter
+import com.dicoding.aplikasidicodingevent.data.ListEventsItem
 import com.dicoding.aplikasidicodingevent.data.Resource
 import com.dicoding.aplikasidicodingevent.databinding.FragmentHomeBinding
 import com.dicoding.aplikasidicodingevent.extensions.setVisible
@@ -39,7 +40,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerViews()
         observeViewModel()
     }
@@ -79,7 +79,11 @@ class HomeFragment : Fragment() {
                             }
                             is Resource.Success -> {
                                 binding.progressBar.setVisible(false)
-                                result.data?.let { activeEventAdapter.submitList(it.take(5)) }
+                                result.data?.let {
+                                    val events = it.take(5)
+                                    viewModel.updateFavoriteStatuses(events)
+                                    activeEventAdapter.submitList(events)
+                                }
                             }
                             is Resource.Error -> {
                                 binding.progressBar.setVisible(false)
@@ -97,12 +101,27 @@ class HomeFragment : Fragment() {
                             }
                             is Resource.Success -> {
                                 binding.progressBar.setVisible(false)
-                                result.data?.let { finishedEventAdapter.submitList(it.take(5)) }
+                                result.data?.let {
+                                    val events = it.take(5)
+                                    viewModel.updateFavoriteStatuses(events)
+                                    finishedEventAdapter.submitList(events)
+                                }
                             }
                             is Resource.Error -> {
                                 binding.progressBar.setVisible(false)
                                 Snackbar.make(binding.root, result.message.toString(), Snackbar.LENGTH_LONG).show()
                             }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.favoriteStatus.collect { _ ->
+                        activeEventAdapter.currentItems.forEachIndexed { index: Int, event: ListEventsItem ->
+                            event.id?.let { activeEventAdapter.notifyItemChanged(index) }
+                        }
+                        finishedEventAdapter.currentItems.forEachIndexed { index: Int, event: ListEventsItem ->
+                            event.id?.let { finishedEventAdapter.notifyItemChanged(index) }
                         }
                     }
                 }
