@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dicoding.aplikasidicodingevent.adapter.EventAdapter
-import com.dicoding.aplikasidicodingevent.data.Resource
+import com.dicoding.aplikasidicodingevent.utils.Resource
 import com.dicoding.aplikasidicodingevent.databinding.FragmentFavoriteBinding
 import com.dicoding.aplikasidicodingevent.viewmodel.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import com.dicoding.aplikasidicodingevent.R
-import com.dicoding.aplikasidicodingevent.data.ListEventsItem
+import com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem
 import com.dicoding.aplikasidicodingevent.databinding.ActivityDetailBinding
 import com.dicoding.aplikasidicodingevent.extensions.loadImage
 import com.dicoding.aplikasidicodingevent.viewmodel.FavoriteViewModel

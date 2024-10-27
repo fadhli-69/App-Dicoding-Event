@@ -3,8 +3,8 @@ package com.dicoding.aplikasidicodingevent.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dicoding.aplikasidicodingevent.data.ListEventsItem
-import com.dicoding.aplikasidicodingevent.data.Resource
+import com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem
+import com.dicoding.aplikasidicodingevent.utils.Resource
 import com.dicoding.aplikasidicodingevent.data.repository.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

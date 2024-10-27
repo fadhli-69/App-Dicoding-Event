@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.dicoding.aplikasidicodingevent.data.ListEventsItem
+import com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem
 import com.dicoding.aplikasidicodingevent.databinding.ItemRowImageBinding
 import com.dicoding.aplikasidicodingevent.extensions.loadImage
-import com.dicoding.aplikasidicodingevent.data.local.EventEntity
 
 class EventAdapter(
     private val context: Context,

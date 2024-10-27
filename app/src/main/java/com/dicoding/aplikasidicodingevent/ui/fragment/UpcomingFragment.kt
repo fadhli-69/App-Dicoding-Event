@@ -13,8 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.aplikasidicodingevent.adapter.EventAdapter
-import com.dicoding.aplikasidicodingevent.data.ListEventsItem
-import com.dicoding.aplikasidicodingevent.data.Resource
+import com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem
+import com.dicoding.aplikasidicodingevent.utils.Resource
 import com.dicoding.aplikasidicodingevent.databinding.FragmentUpcomingBinding
 import com.dicoding.aplikasidicodingevent.extensions.setVisible
 import com.dicoding.aplikasidicodingevent.ui.activity.DetailActivity

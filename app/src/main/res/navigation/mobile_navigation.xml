@@ -10,7 +10,11 @@
         android:id="@+id/navigation_home"
         android:name="com.dicoding.aplikasidicodingevent.ui.fragment.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_setting"
+            app:destination="@id/navigation_setting" />
+    </fragment>
 
     <!-- Fragment untuk halaman Upcoming Events -->
     <fragment
@@ -26,6 +30,12 @@
         android:label="@string/title_finished"
         tools:layout="@layout/fragment_finished" />
 
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.dicoding.aplikasidicodingevent.ui.fragment.SettingFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_setting" />
+
     <!-- Fragment untuk halaman Favorite -->
     <fragment
         android:id="@+id/navigation_favorite"
@@ -37,7 +47,7 @@
             app:destination="@id/detailActivity">
             <argument
                 android:name="event"
-                app:argType="com.dicoding.aplikasidicodingevent.data.ListEventsItem" />
+                app:argType="com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem" />
         </action>
     </fragment>
 
@@ -47,7 +57,7 @@
         android:label="Detail Event">
         <argument
             android:name="event"
-            app:argType="com.dicoding.aplikasidicodingevent.data.ListEventsItem" />
+            app:argType="com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem" />
     </activity>
 
 </navigation>

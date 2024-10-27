@@ -1,6 +1,6 @@
 package com.dicoding.aplikasidicodingevent.retrofit
 
-import com.dicoding.aplikasidicodingevent.data.EventResponse
+import com.dicoding.aplikasidicodingevent.data.remote.EventResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

@@ -1,4 +1,4 @@
-package com.dicoding.aplikasidicodingevent.data
+package com.dicoding.aplikasidicodingevent.utils
 
 sealed class Resource<T>(
     val data: T? = null,

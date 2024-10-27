@@ -2,7 +2,7 @@ package com.dicoding.aplikasidicodingevent.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.dicoding.aplikasidicodingevent.data.ListEventsItem
+import com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem
 
 @Entity(tableName = "favorite_events")
 data class EventEntity(

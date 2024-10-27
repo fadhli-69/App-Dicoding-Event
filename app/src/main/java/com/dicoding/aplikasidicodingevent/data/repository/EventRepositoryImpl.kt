@@ -1,7 +1,7 @@
 package com.dicoding.aplikasidicodingevent.data.repository
 
-import com.dicoding.aplikasidicodingevent.data.ListEventsItem
-import com.dicoding.aplikasidicodingevent.data.Resource
+import com.dicoding.aplikasidicodingevent.data.remote.ListEventsItem
+import com.dicoding.aplikasidicodingevent.utils.Resource
 import com.dicoding.aplikasidicodingevent.data.local.EventDao
 import com.dicoding.aplikasidicodingevent.data.local.EventEntity
 import com.dicoding.aplikasidicodingevent.retrofit.ApiService

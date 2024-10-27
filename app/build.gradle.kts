@@ -85,6 +85,9 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
+    implementation (libs.androidx.datastore.preferences)
+
+
     // Testing Libraries
     testImplementation(libs.junit)                       // JUnit for unit testing
     androidTestImplementation(libs.androidx.junit)       // AndroidX JUnit extensions for Android testing
