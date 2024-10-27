@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.aplikasidicodingevent.adapter.EventAdapter
+import com.dicoding.aplikasidicodingevent.data.ListEventsItem
 import com.dicoding.aplikasidicodingevent.data.Resource
 import com.dicoding.aplikasidicodingevent.databinding.FragmentFinishedBinding
 import com.dicoding.aplikasidicodingevent.extensions.setVisible
@@ -20,6 +21,7 @@ import com.dicoding.aplikasidicodingevent.ui.activity.DetailActivity
 import com.dicoding.aplikasidicodingevent.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -70,7 +72,7 @@ class FinishedFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
                     if (it.isEmpty()) {
-                        viewModel.resetSearch(isActive = false)
+                        viewModel.resetSearch()
                     } else {
                         viewModel.searchEvents(it, isActive = false)
                     }
@@ -83,22 +85,30 @@ class FinishedFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                viewModel.searchResults.collect { result ->
-                    when(result) {
-                        is Resource.Loading -> {
-                            binding.progressBar.setVisible(true)
-                        }
-                        is Resource.Success -> {
-                            binding.progressBar.setVisible(false)
-                            result.data?.let { eventAdapter.submitList(it) }
-                        }
-                        is Resource.Error -> {
-                            binding.progressBar.setVisible(false)
-                            Snackbar.make(binding.root, result.message.toString(), Snackbar.LENGTH_LONG).show()
-                        }
+                // Observe search results
+                launch {
+                    viewModel.searchResults.collectLatest { result ->
+                        result?.let { handleResource(it) }
+                            ?: // If search results are null, show finished events
+                            viewModel.finishedEvents.collectLatest { handleResource(it) }
                     }
                 }
+            }
+        }
+    }
+
+    private fun handleResource(result: Resource<List<ListEventsItem>>) {
+        when (result) {
+            is Resource.Loading -> {
+                binding.progressBar.setVisible(true)
+            }
+            is Resource.Success -> {
+                binding.progressBar.setVisible(false)
+                result.data?.let { eventAdapter.submitList(it) }
+            }
+            is Resource.Error -> {
+                binding.progressBar.setVisible(false)
+                Snackbar.make(binding.root, result.message.toString(), Snackbar.LENGTH_LONG).show()
             }
         }
     }
