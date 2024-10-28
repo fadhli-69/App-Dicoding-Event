@@ -67,13 +67,17 @@ dependencies {
     implementation(libs.material)                        // Material Design components and styles
 
     // Dependency Injection
-    implementation(libs.hilt.android)                    // Hilt for dependency injection
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.hilt.work)                    // Hilt for dependency injection
     ksp(libs.hilt.compiler)                              // Hilt compiler for code generation
 
     // Networking & Serialization
     implementation(libs.retrofit)                        // Retrofit for API integration
     implementation(libs.converter.gson)                  // Gson converter for JSON parsing
     implementation(libs.logging.interceptor)             // OkHttp logging for network requests
+
+    implementation(libs.gson)
 
     // Image Loading
     implementation(libs.glide)                           // Glide for image loading and caching

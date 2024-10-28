@@ -16,7 +16,6 @@ class SettingFragment : Fragment() {
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
 
-    @Suppress("UNUSED")
     private val viewModel: SettingViewModel by viewModels()
 
     override fun onCreateView(
@@ -31,19 +30,36 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Observe theme settings dan terapkan tema
+        setupThemeSetting()
+        setupReminderSetting()
+    }
+
+    private fun setupThemeSetting() {
         viewModel.themeSettings.observe(viewLifecycleOwner) { isDarkModeActive ->
+            binding.switchTheme.setOnCheckedChangeListener(null)
             binding.switchTheme.isChecked = isDarkModeActive
+
             if (isDarkModeActive) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-        }
 
-        // Handle switch changes
-        binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.saveThemeSetting(isChecked)
+            binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.saveThemeSetting(isChecked)
+            }
+        }
+    }
+
+    private fun setupReminderSetting() {
+        viewModel.reminderSettings.observe(viewLifecycleOwner) { isEnabled ->
+
+            binding.switchReminder.setOnCheckedChangeListener(null)
+            binding.switchReminder.isChecked = isEnabled
+
+            binding.switchReminder.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.saveReminderSetting(isChecked)
+            }
         }
     }
 

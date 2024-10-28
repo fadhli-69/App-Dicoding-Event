@@ -101,4 +101,18 @@ class EventRepositoryImpl @Inject constructor(
         val eventEntity = EventEntity.fromListEventsItem(event)
         eventDao.deleteFavoriteEvent(eventEntity)
     }
+
+    override fun getUpcomingEventForReminder(): Flow<Resource<List<ListEventsItem>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val response = apiService.getUpcomingEvent() // Menggunakan endpoint dengan limit=1
+            emit(Resource.Success(response.listEvents))
+        } catch (e: HttpException) {
+            emit(Resource.Error(e.localizedMessage ?: "Terjadi kesalahan"))
+        } catch (e: IOException) {
+            emit(Resource.Error("Periksa koneksi internet Anda"))
+        } catch (e: Exception) {
+            emit(Resource.Error("Terjadi kesalahan"))
+        }
+    }
 }

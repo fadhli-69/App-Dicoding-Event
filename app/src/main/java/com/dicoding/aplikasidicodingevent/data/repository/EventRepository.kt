@@ -12,4 +12,5 @@ interface EventRepository {
     fun isEventFavorited(id: Int): Flow<Boolean>
     suspend fun addToFavorite(event: ListEventsItem)
     suspend fun removeFromFavorite(event: ListEventsItem)
+    fun getUpcomingEventForReminder(): Flow<Resource<List<ListEventsItem>>>
 }
