@@ -29,8 +29,13 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    @Suppress("UNUSED")
     private val viewModel: MainViewModel by viewModels()
+
+    @Suppress("UNUSED")
     private val settingViewModel: SettingViewModel by viewModels()
+
     private lateinit var activeEventAdapter: EventAdapter
     private lateinit var finishedEventAdapter: EventAdapter
 

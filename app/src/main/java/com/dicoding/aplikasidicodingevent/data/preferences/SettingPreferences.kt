@@ -9,17 +9,27 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class SettingPreferences @Inject constructor(private val dataStore: DataStore<Preferences>) {
-    private val themeKey = booleanPreferencesKey("theme_setting")
+interface ThemePreference {
+    fun getThemeSetting(): Flow<Boolean>
+    suspend fun saveThemeSetting(isDarkModeActive: Boolean)
+}
 
-    fun getThemeSetting(): Flow<Boolean> {
+@Singleton
+class SettingPreferences @Inject constructor(
+    private val dataStore: DataStore<Preferences>
+) : ThemePreference {
+
+    companion object {
+        private val themeKey = booleanPreferencesKey("theme_setting")
+    }
+
+    override fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[themeKey] ?: false
         }
     }
 
-    suspend fun saveThemeSetting(isDarkModeActive: Boolean) {
+    override suspend fun saveThemeSetting(isDarkModeActive: Boolean) {
         dataStore.edit { preferences ->
             preferences[themeKey] = isDarkModeActive
         }

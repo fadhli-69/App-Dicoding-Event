@@ -24,7 +24,6 @@ class EventRepositoryImpl @Inject constructor(
             val response = apiService.getEvents(1)
             val events = response.listEvents
 
-            // Update status bookmark untuk setiap event
             events.forEach { event ->
                 event.id?.let { id ->
                     event.isBookmarked = eventDao.isEventFavorited(id).first()
@@ -47,7 +46,6 @@ class EventRepositoryImpl @Inject constructor(
             val response = apiService.getEvents(0)
             val events = response.listEvents
 
-            // Update status bookmark untuk setiap event
             events.forEach { event ->
                 event.id?.let { id ->
                     event.isBookmarked = eventDao.isEventFavorited(id).first()
@@ -72,7 +70,6 @@ class EventRepositoryImpl @Inject constructor(
                 it.name?.contains(query, ignoreCase = true) == true
             }
 
-            // Update status bookmark untuk hasil pencarian
             filteredEvents.forEach { event ->
                 event.id?.let { id ->
                     event.isBookmarked = eventDao.isEventFavorited(id).first()
@@ -90,11 +87,6 @@ class EventRepositoryImpl @Inject constructor(
             Resource.Success(entities.map {
                 it.toListEventsItem().copy(isBookmarked = true)
             })
-        }
-
-    override fun getFavoriteEventById(id: Int): Flow<Resource<ListEventsItem?>> =
-        eventDao.getFavoriteEventById(id).map { entity ->
-            Resource.Success(entity?.toListEventsItem()?.copy(isBookmarked = true))
         }
 
     override fun isEventFavorited(id: Int): Flow<Boolean> =

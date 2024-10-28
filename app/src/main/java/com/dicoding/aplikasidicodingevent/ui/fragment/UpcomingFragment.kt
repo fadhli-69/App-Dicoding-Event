@@ -28,7 +28,10 @@ import kotlinx.coroutines.launch
 class UpcomingFragment : Fragment() {
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
+
+    @Suppress("UNUSED")
     private val viewModel: MainViewModel by viewModels()
+
     private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(

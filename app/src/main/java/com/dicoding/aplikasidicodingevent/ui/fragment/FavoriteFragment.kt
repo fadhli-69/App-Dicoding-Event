@@ -20,7 +20,10 @@ import kotlinx.coroutines.launch
 class FavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
+
+    @Suppress("UNUSED")
     private val viewModel: FavoriteViewModel by viewModels()
+
     private lateinit var adapter: EventAdapter
 
     override fun onCreateView(

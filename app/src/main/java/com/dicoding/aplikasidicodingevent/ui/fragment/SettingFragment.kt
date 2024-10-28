@@ -15,6 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class SettingFragment : Fragment() {
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
+
+    @Suppress("UNUSED")
     private val viewModel: SettingViewModel by viewModels()
 
     override fun onCreateView(
